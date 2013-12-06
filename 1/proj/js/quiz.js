@@ -4,12 +4,13 @@
         defaults = {
             questions: '../data/questions.json',
             answerElementMarkup: '<label class="radio"><input type="radio" value="%VALUE%" class="userAnswer" data-id="%ID%">%VALUE%</label>',
-            questionHolder: $('.question'),
-            answersHolder: $('.answers'),
+            questionHolder: '.question',
+            answersHolder: '.answers',
             resultScore: 0,
             questionIndex: 0,
             questionsLength: 0,
-            data: []
+            data: [],
+            complete: null
 
         };
  
@@ -25,6 +26,9 @@
     }
  
     Plugin.prototype.init = function () {
+        this.questionHolder = $(this.element).find(this.options.questionHolder);
+        this.answersHolder = $(this.element).find(this.options.answersHolder);
+        
         this.addClickEvent();
         this.getData(this.options.questions);
     };
@@ -44,19 +48,19 @@
             questionIndex = this.options.questionIndex,
             answer = '';
 
-        this.options.answersHolder.html('');
+        this.answersHolder.html('');
 
-    	this.options.questionHolder.text(data[questionIndex].question);
+    	this.questionHolder.text(data[questionIndex].question);
 
     	for (var i = 0, len = data[questionIndex].answers.length; i < len; i += 1) {
     		answer += this.options.answerElementMarkup.replace(/%VALUE%/g, data[questionIndex].answers[i]).replace(/%ID%/g, i);
     	};
-        this.options.answersHolder.html(answer);
+        this.answersHolder.html(answer);
     };
 
     Plugin.prototype.addClickEvent = function () {
     	var self = this;
-    	this.options.answersHolder.on('click','.userAnswer', function(){
+    	this.answersHolder.on('click','.userAnswer', function(){
             self.countScores(self.options.data[self.options.questionIndex].points[$(this).data('id')]);
     	});
     };
@@ -68,8 +72,11 @@
                 this.showQuestion();
             } else {
                 $(this.element).html('');
-                $(this.element).showResult({'score': this.options.resultScore});
-
+                console.log('complete');
+                //$(this.element).showResult({'score': this.options.resultScore});
+                if (typeof this.options.complete === 'function') {
+                    this.options.complete({score: this.options.resultScore});
+                }
             }
     };
 

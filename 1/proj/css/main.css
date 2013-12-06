@@ -2,10 +2,10 @@
    Author's custom styles
    ========================================================================== */
 
-#quizForm {
+#quizForm, #quizForm2 {
 	display: inline-block;
 }
-#quizForm label {
+#quizForm label, #quizForm2 label {
 	cursor: pointer;
 }
 

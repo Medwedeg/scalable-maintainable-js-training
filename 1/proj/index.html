@@ -28,6 +28,11 @@
           <p class="question text-info lead"></p>
           <div class="answers well text-left">Loading ...</div>
         </form>
+        <br>
+        <form id="quizForm2" class="well">
+          <p class="question text-info lead"></p>
+          <div class="answers well text-left">Loading ...</div>
+        </form>
       </div>
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
       <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.1.min.js"><\/script>')</script>
@@ -36,6 +41,19 @@
 
       <script src="js/quiz.js"></script>
       <script src="js/showResult.js"></script>
-      <script>$('#quizForm').quiz();</script>
+      <script>
+        $('#quizForm').quiz({ complete : function (data) {
+          console.log(data.score);
+            $('#quizForm').showResult({score: data.score});
+          }
+        });
+
+        $('#quizForm2').quiz({ complete : function (data) {
+          console.log(data.score);
+            $('#quizForm2').showResult({score: data.score});
+          }
+        });  
+
+      </script>
     </body>
 </html>

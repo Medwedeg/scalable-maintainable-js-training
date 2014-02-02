@@ -1,27 +1,27 @@
-var quizApp = quizApp || {};
-
+define("quizModule",["jquery", "eventBus", "underscore"], function($, eventBus, underscore) {
 // module-literal
-quizApp.quiz = (function (quizApp, $, undefined) {
- 
+    console.log('123');
     // private vars and methods
     var defaultOptions = {
             element: {},
             questions: '../data/questions.json',
-            answerElementMarkup: '<label class="radio"><input type="radio" value="%VALUE%" class="userAnswer" data-id="%ID%">%VALUE%</label>',
+            //answerElementMarkup: '<label class="radio"><input type="radio" value="%VALUE%" class="userAnswer" data-id="%ID%">%VALUE%</label>',
+            answerElementMarkup: _.template('<label class="radio"><input type="radio" value="<%= value %>" class="userAnswer" data-id="<%= id %>"><%= value %></label>'),
             questionHolder: '.question',
             answersHolder: '.answers',
             resultScore: 0,
             questionIndex: 0,
             questionsLength: 0,
-            data: [],
-            complete: null
+            data: []
         };
 
     return function (inputOptions) {
         // public vars and methods
         var options = {},
-            element;
-        var init = function (inputOptions) {
+            element,
+            questionHolder,
+            answersHolder;
+        this.init = function (inputOptions) {
             element = inputOptions.element;
             console.log(inputOptions, element);
             setOptions(inputOptions);
@@ -59,7 +59,8 @@ quizApp.quiz = (function (quizApp, $, undefined) {
             questionHolder.text(data[questionIndex].question);
 
             for (var i = 0, len = data[questionIndex].answers.length; i < len; i += 1) {
-                answer += options.answerElementMarkup.replace(/%VALUE%/g, data[questionIndex].answers[i]).replace(/%ID%/g, i);
+                //answer += options.answerElementMarkup.replace(/%VALUE%/g, data[questionIndex].answers[i]).replace(/%ID%/g, i);
+                answer +=  options.answerElementMarkup({value: data[questionIndex].answers[i], id: i})
             };
             answersHolder.html(answer);
         };
@@ -79,13 +80,8 @@ quizApp.quiz = (function (quizApp, $, undefined) {
                 } else {
                     element.html('');
                     console.log('complete');
-                    if (typeof options.complete === 'function') {
-                        options.complete({score: options.resultScore});
-                    }
+                    eventBus.trigger('showResult', {score: options.resultScore, resultContainer: element});
                 }
         };
-        init(inputOptions);
-        return this;
     };
- 
-})(quizApp, jQuery);
+});

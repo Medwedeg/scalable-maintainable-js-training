@@ -1,21 +1,26 @@
-var quizApp = quizApp || {};
-
-// module-literal
-quizApp.showResult = (function (quizApp, $, undefined) {
+define("showResult",["jquery"], function($) {
  
     // private vars and methods
     var defaultOptions = {
         element: {},
         resultsJson: '../data/results.json',
         data: [],
-        resultsMarkup: '<div class="alert alert-block">' +
+        // resultsMarkup: '<div class="alert alert-block">' +
+        //                     '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+        //                     '<h4>Ваш результат</h4>' +
+        //                     '<div style="text-align: center;">' +
+        //                         '<strong class="lead">%SCORE% баллов</strong>' +
+        //                         '<p class="text-info lead">%DESCRIPTION%</p>'+
+        //                     '</div>'+
+        //                 '</div>',
+        resultsMarkup: _.template('<div class="alert alert-block">' +
                             '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
                             '<h4>Ваш результат</h4>' +
                             '<div style="text-align: center;">' +
-                                '<strong class="lead">%SCORE% баллов</strong>' +
-                                '<p class="text-info lead">%DESCRIPTION%</p>'+
+                                '<strong class="lead"><%= score %> баллов</strong>' +
+                                '<p class="text-info lead"><%= description %></p>'+
                             '</div>'+
-                        '</div>',
+                        '</div>'),
         score: 0
     };
 
@@ -46,7 +51,8 @@ quizApp.showResult = (function (quizApp, $, undefined) {
                     lessTo = true;
                 }
             });
-            resultHTML = options.resultsMarkup.replace('%SCORE%', score).replace('%DESCRIPTION%', description);
+            //resultHTML = options.resultsMarkup.replace('%SCORE%', score).replace('%DESCRIPTION%', description);
+            resultHTML = options.resultsMarkup({score: score, description: description});
             element.html(resultHTML);
         };
 
@@ -60,4 +66,4 @@ quizApp.showResult = (function (quizApp, $, undefined) {
         return this;
     };
  
-})(quizApp, jQuery);
+});
